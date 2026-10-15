@@ -28,7 +28,6 @@ export default function WorkShell() {
   const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const mainRef = useRef<HTMLElement>(null);
   const workRef = useRef<HTMLElement>(null);
-  const snapTimer = useRef<number | undefined>(undefined);
 
   // Persisted collapse is read after mount so SSR HTML always matches
   // the server (expanded) render — no hydration mismatch. Deferred to a
@@ -69,24 +68,10 @@ export default function WorkShell() {
   // Re-evaluated per tab since tab switches change the content height.
   const workActive = useWorkPin(workRef, curTab);
 
-  // Clear any pending snap-restore timeout on unmount.
-  useEffect(() => () => window.clearTimeout(snapTimer.current), []);
-
-  // Up-button path. On mobile, snap is parked during the smooth scroll
-  // home (otherwise snap can trap the flight mid-way) and the inner
-  // column is reset so re-entry starts at the top. Desktop passes
-  // straight through to the hard-scroll-back trip.
-  const goHeroMobile = useCallback(() => {
-    if (window.matchMedia("(max-width: 720px)").matches) {
-      document.documentElement.classList.add("no-snap");
-      mainRef.current?.scrollTo({ top: 0 });
-      window.clearTimeout(snapTimer.current);
-      snapTimer.current = window.setTimeout(() => {
-        document.documentElement.classList.remove("no-snap");
-      }, 800);
-    }
-    hard.goHero();
-  }, [hard]);
+  // Up-button path is hard.goHero directly: the mobile snap parking
+  // (no-snap + inner reset, restored on arrival) lives inside the hook so
+  // the ring trip and the button share one trip. Desktop passes straight
+  // through to the hard-scroll-back trip.
 
   return (
     <>
@@ -127,7 +112,7 @@ export default function WorkShell() {
       <button
         type="button"
         className="up-btn"
-        onClick={goHeroMobile}
+        onClick={hard.goHero}
         aria-label="back to hero"
       >
         <ArrowUp size={20} aria-hidden="true" />

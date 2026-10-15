@@ -4,6 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const NEED = 1400;
 /** How long the floating ring stays visible per wheel tick. */
 const FLASH_MS = 700;
+/** Fallback snap-restore if the arrival scroll event never fires
+ *  (interrupted trip). Generous on purpose: the arrival listener below
+ *  removes no-snap early on success, so this only fires when the flight
+ *  never completes — it must not cut a slow flight short. */
+const SNAP_FALLBACK_MS = 2000;
 
 export type HardScrollBack = {
   /** Accumulated scroll effort 0–1 (drives the ring). */
@@ -28,6 +33,7 @@ export function useHardScrollBack(): HardScrollBack {
   const [visible, setVisible] = useState(false);
   const accRef = useRef(0);
   const hideRef = useRef<number | undefined>(undefined);
+  const snapRef = useRef<number | undefined>(undefined);
   // Set once the 100% trip fires, so further wheel ticks during the
   // smooth scroll home can't re-fill the ring. Cleared on arrival
   // (scrollY < 20) or when scrolling back down into #work.
@@ -49,23 +55,45 @@ export function useHardScrollBack(): HardScrollBack {
     );
   }, []);
 
+  // Mobile-only (<=720px) snap parking, shared by the ring trip and the
+  // up button (both call goHero). Parks scroll-snap during the smooth
+  // flight home — otherwise mandatory snap can trap it mid-way — and
+  // resets the inner column so re-entry starts at the top. Desktop is
+  // untouched: early return, no class, no timer.
+  const parkSnapMobile = useCallback(() => {
+    if (!window.matchMedia("(max-width: 720px)").matches) return;
+    document.documentElement.classList.add("no-snap");
+    document.getElementById("mainCol")?.scrollTo({ top: 0 });
+    window.clearTimeout(snapRef.current);
+    snapRef.current = window.setTimeout(() => {
+      document.documentElement.classList.remove("no-snap");
+    }, SNAP_FALLBACK_MS);
+  }, []);
+
   const goHero = useCallback(() => {
+    parkSnapMobile();
     window.scrollTo({ top: 0, behavior: "smooth" });
     resetHard();
     lockedRef.current = true;
-  }, [resetHard]);
+  }, [parkSnapMobile, resetHard]);
 
   const enterWork = useCallback(() => {
     document.getElementById("work")?.scrollIntoView({ behavior: "smooth" });
   }, []);
 
   // Reset once back in the hero (original: scrollY < 20) — arrival also
-  // unlocks the ring for the next visit.
+  // unlocks the ring for the next visit and restores snap parked for the
+  // mobile trip (the fallback timer above only matters if arrival never
+  // fires, e.g. an interrupted flight).
   useEffect(() => {
     const onScroll = () => {
       if (window.scrollY < 20) {
         lockedRef.current = false;
         resetHard();
+        if (document.documentElement.classList.contains("no-snap")) {
+          document.documentElement.classList.remove("no-snap");
+          window.clearTimeout(snapRef.current);
+        }
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -114,8 +142,14 @@ export function useHardScrollBack(): HardScrollBack {
     return () => document.removeEventListener("keydown", onKey);
   }, [enterWork]);
 
-  // Clear any pending flash-hide timeout on unmount.
-  useEffect(() => () => window.clearTimeout(hideRef.current), []);
+  // Clear any pending flash-hide / snap-restore timeouts on unmount.
+  useEffect(
+    () => () => {
+      window.clearTimeout(hideRef.current);
+      window.clearTimeout(snapRef.current);
+    },
+    [],
+  );
 
   return { progress, visible, goHero, enterWork };
 }

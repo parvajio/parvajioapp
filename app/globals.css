@@ -378,14 +378,15 @@ html[data-accent="green"] .swatch[data-accent="green"]{border-color:var(--white)
 
 /* ---------- Step 8a: mobile scroll-lock (<720px only; desktop unchanged) ---------- */
 /* Locks .col-main until #work pins to the viewport top so swipes move the
-   page first, then settles on hero/work via proximity snap (never half in
-   view). Down-swipe at scrollTop 0 is contained — return is via up button. */
+   page first, then settles on hero/work via mandatory snap (never half in
+   view). No overscroll containment: swipes chain to the page when the inner
+   column can't scroll — return via content swipe or up button. */
 @media(max-width:720px){
-  html{scroll-snap-type:y proximity}
+  html{scroll-snap-type:y mandatory}
   html.no-snap{scroll-snap-type:none}
   #hero,#work{scroll-snap-align:start}
   #hero{min-height:100vh;min-height:100dvh}
   #work{min-height:100vh;min-height:100dvh}
-  #work .col-main{overflow-y:hidden;overscroll-behavior-y:contain;max-height:100vh;max-height:calc(100dvh - 60px)}
+  #work .col-main{overflow-y:hidden;max-height:100vh;max-height:calc(100dvh - 60px)}
   #work[data-active="true"] .col-main{overflow-y:auto}
 }
