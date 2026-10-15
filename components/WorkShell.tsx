@@ -16,6 +16,11 @@ const NAV_KEY = "parva-nav";
 export default function WorkShell() {
   const [curTab, setCurTab] = useState<WorkTab>("profile");
   const [collapsed, setCollapsed] = useState(false);
+  // Hovered project card index — the original kept this in a `hoverIdx`
+  // variable and re-rendered the rail context from it. The scroll-spy index
+  // reset is handled by useScrollSpy rebuilding on curTab change (the
+  // original did it inside showTab()).
+  const [hoverIdx, setHoverIdx] = useState<number | null>(null);
   const mainRef = useRef<HTMLElement>(null);
 
   // Persisted collapse is read after mount so SSR HTML always matches
@@ -47,6 +52,7 @@ export default function WorkShell() {
 
   const showTab = useCallback((tab: WorkTab) => {
     setCurTab(tab);
+    setHoverIdx(null);
     mainRef.current?.scrollTo({ top: 0 });
   }, []);
 
@@ -68,13 +74,14 @@ export default function WorkShell() {
             scrolled={spy.scrolled}
           />
           {curTab === "profile" && <ProfileTab />}
-          {curTab === "works" && <ProjectsTab />}
+          {curTab === "works" && <ProjectsTab onHover={setHoverIdx} />}
           {curTab === "contact" && <ContactTab />}
         </main>
         <RightRail
           curTab={curTab}
           sections={spy.sections}
           activeIdx={spy.activeIdx}
+          hoverIdx={hoverIdx}
           progress={spy.progress}
           onSelect={spy.scrollToSec}
         />

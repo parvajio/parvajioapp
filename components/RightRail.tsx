@@ -2,6 +2,7 @@
 
 import { ArrowUpRight } from "lucide-react";
 import { CTX_STATIC, RAIL_LINKS, type RailIcon } from "@/data/profile";
+import { WORKS } from "@/data/works";
 import type { WorkTab } from "./WorkShell";
 import DhakaClock from "./DhakaClock";
 
@@ -9,6 +10,8 @@ type RightRailProps = {
   curTab: WorkTab;
   sections: string[];
   activeIdx: number;
+  /** Hovered project card index — null when no card is hovered. */
+  hoverIdx: number | null;
   /** Reading progress 0–1. */
   progress: number;
   onSelect: (index: number) => void;
@@ -46,13 +49,19 @@ export default function RightRail({
   curTab,
   sections,
   activeIdx,
+  hoverIdx,
   progress,
   onSelect,
 }: RightRailProps) {
-  // Step 4 covers the profile + contact context variants only (the projects
-  // preview variant arrives in Step 5). Until then the works tab falls back
-  // to the profile facts so the block never renders empty.
   const ctx = curTab === "contact" ? CTX_STATIC.contact : CTX_STATIC.profile;
+  // Projects variant: hover wins (PREVIEW), otherwise the scroll-spy index
+  // (IN VIEW) — ports renderContext() from old/index.html. Clamped so a
+  // stale activeIdx during tab switch can't index past the array.
+  const workIdx =
+    curTab === "works"
+      ? Math.min(hoverIdx ?? activeIdx, WORKS.length - 1)
+      : 0;
+  const work = WORKS[workIdx];
   const pct = Math.round(progress * 100);
 
   return (
@@ -96,15 +105,38 @@ export default function RightRail({
           <DhakaClock variant="rail" />
         </div>
         <div className="rail-block" id="railContext">
-          <div className="rail-h">
-            <span>{ctx.heading}</span>
-          </div>
-          {ctx.rows.map((row) => (
-            <div key={row.k} className="kv">
-              <span>{row.k}</span>
-              <b>{row.v}</b>
-            </div>
-          ))}
+          {curTab === "works" ? (
+            <>
+              <div className="rail-h">
+                <span>
+                  PROJECT {String(workIdx + 1).padStart(2, "0")}
+                </span>
+                <span>{hoverIdx !== null ? "PREVIEW" : "IN VIEW"}</span>
+              </div>
+              <div className="ctx-title">{work.t}</div>
+              <p className="ctx-p">{work.d}</p>
+              <div className="kv">
+                <span>Stack</span>
+                <b>{work.s}</b>
+              </div>
+              <div className="kv">
+                <span>Role</span>
+                <b>{work.r}</b>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="rail-h">
+                <span>{ctx.heading}</span>
+              </div>
+              {ctx.rows.map((row) => (
+                <div key={row.k} className="kv">
+                  <span>{row.k}</span>
+                  <b>{row.v}</b>
+                </div>
+              ))}
+            </>
+          )}
         </div>
         <div className="rail-block">
           <div className="rail-h">
