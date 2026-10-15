@@ -360,10 +360,13 @@ html[data-accent="green"] .swatch[data-accent="green"]{border-color:var(--white)
   #work .col-nav{display:none}
   .col-info{display:none}
   .mnav{display:block;position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-  .mnav-bar{display:flex;align-items:center;gap:10px;min-height:60px;padding:8px 16px}
+  .mnav-bar{display:flex;align-items:center;gap:8px;min-height:48px;padding:6px 12px}
   .mnav-spacer{flex:1}
-  .mnav-theme{width:40px;height:40px}
-  .mnav-theme svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .mnav-menu{width:34px;height:34px;border-radius:10px}
+  .mnav-menu svg{width:18px;height:18px}
+  .mnav-theme{width:34px;height:34px}
+  .mnav-theme svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .mnav-cta{height:34px;padding:0 14px;font-size:14px;border-radius:10px}
   .mnav-theme .tg-sun{display:none}
   html[data-theme="light"] .mnav-theme .tg-moon{display:none}
   html[data-theme="light"] .mnav-theme .tg-sun{display:block}
@@ -374,6 +377,17 @@ html[data-accent="green"] .swatch[data-accent="green"]{border-color:var(--white)
   #work .mnav-item b{font-family:var(--font-geist-sans),'Geist','Inter',system-ui,-apple-system,sans-serif;font-size:17px;font-weight:500;letter-spacing:-.01em;color:inherit}
   #work .mnav-item.active b{font-weight:700}
   .mnav-color{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 12px 6px;margin-top:8px;border-top:1px solid var(--line)}
+  /* Compact inner PageBar to match the slim mnav (mobile only). */
+  .page-bar{height:56px;padding:0 12px;gap:8px}
+  .hero{margin-top:-56px}
+  .page-bar .icon-btn{width:34px;height:34px;border-radius:10px}
+  .page-bar .icon-btn svg{width:16px;height:16px}
+  .page-bar .btn-cta{height:34px;padding:0 14px;font-size:14px;border-radius:10px}
+  .bar-avatar{width:30px;height:30px;font-size:14px}
+  .bar-id{gap:8px}
+  .bar-name{font-size:14px}
+  .bar-sub{font-size:12px}
+  .bar-actions{gap:8px}
 }
 
 /* ---------- Step 8a: mobile scroll-lock (<720px only; desktop unchanged) ---------- */
@@ -387,6 +401,6 @@ html[data-accent="green"] .swatch[data-accent="green"]{border-color:var(--white)
   #hero,#work{scroll-snap-align:start}
   #hero{min-height:100vh;min-height:100dvh}
   #work{min-height:100vh;min-height:100dvh}
-  #work .col-main{overflow-y:hidden;max-height:100vh;max-height:calc(100dvh - 60px)}
+  #work .col-main{overflow-y:hidden;max-height:100vh;max-height:calc(100dvh - 48px)}
   #work[data-active="true"] .col-main{overflow-y:auto}
 }
