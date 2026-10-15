@@ -5,6 +5,7 @@ import { ArrowUp } from "lucide-react";
 import { useHardScrollBack } from "@/hooks/useHardScrollBack";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import ContactTab from "./ContactTab";
+import MobileNav from "./MobileNav";
 import PageBar from "./PageBar";
 import ProfileTab from "./ProfileTab";
 import ProjectsTab from "./ProjectsTab";
@@ -65,6 +66,7 @@ export default function WorkShell() {
   return (
     <>
       <section id="work" className={collapsed ? "nav-collapsed" : undefined}>
+        <MobileNav curTab={curTab} onTab={showTab} />
         <div className="cols">
           <Sidebar
             curTab={curTab}
