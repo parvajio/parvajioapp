@@ -1,12 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowUp } from "lucide-react";
+import { useHardScrollBack } from "@/hooks/useHardScrollBack";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import ContactTab from "./ContactTab";
 import PageBar from "./PageBar";
 import ProfileTab from "./ProfileTab";
 import ProjectsTab from "./ProjectsTab";
 import RightRail from "./RightRail";
+import ScrollRing from "./ScrollRing";
 import Sidebar from "./Sidebar";
 
 export type WorkTab = "profile" | "works" | "contact";
@@ -57,35 +60,47 @@ export default function WorkShell() {
   }, []);
 
   const spy = useScrollSpy(mainRef, curTab);
+  const hard = useHardScrollBack();
 
   return (
-    <section id="work" className={collapsed ? "nav-collapsed" : undefined}>
-      <div className="cols">
-        <Sidebar
-          curTab={curTab}
-          onTab={showTab}
-          collapsed={collapsed}
-          onToggleNav={toggleNav}
-        />
-        <main className="col-main" id="mainCol" ref={mainRef}>
-          <PageBar
-            onContact={() => showTab("contact")}
-            showId={spy.showId}
-            scrolled={spy.scrolled}
+    <>
+      <section id="work" className={collapsed ? "nav-collapsed" : undefined}>
+        <div className="cols">
+          <Sidebar
+            curTab={curTab}
+            onTab={showTab}
+            collapsed={collapsed}
+            onToggleNav={toggleNav}
           />
-          {curTab === "profile" && <ProfileTab />}
-          {curTab === "works" && <ProjectsTab onHover={setHoverIdx} />}
-          {curTab === "contact" && <ContactTab />}
-        </main>
-        <RightRail
-          curTab={curTab}
-          sections={spy.sections}
-          activeIdx={spy.activeIdx}
-          hoverIdx={hoverIdx}
-          progress={spy.progress}
-          onSelect={spy.scrollToSec}
-        />
-      </div>
-    </section>
+          <main className="col-main" id="mainCol" ref={mainRef}>
+            <PageBar
+              onContact={() => showTab("contact")}
+              showId={spy.showId}
+              scrolled={spy.scrolled}
+            />
+            {curTab === "profile" && <ProfileTab />}
+            {curTab === "works" && <ProjectsTab onHover={setHoverIdx} />}
+            {curTab === "contact" && <ContactTab />}
+          </main>
+          <RightRail
+            curTab={curTab}
+            sections={spy.sections}
+            activeIdx={spy.activeIdx}
+            hoverIdx={hoverIdx}
+            progress={spy.progress}
+            onSelect={spy.scrollToSec}
+          />
+        </div>
+      </section>
+      <button
+        type="button"
+        className="up-btn"
+        onClick={hard.goHero}
+        aria-label="back to hero"
+      >
+        <ArrowUp size={20} aria-hidden="true" />
+      </button>
+      <ScrollRing progress={hard.progress} visible={hard.visible} />
+    </>
   );
 }
