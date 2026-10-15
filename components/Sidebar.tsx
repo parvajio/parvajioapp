@@ -111,22 +111,6 @@ export default function Sidebar({
         })}
       </nav>
       <div className="nav-divider" role="separator"></div>
-      <div className="nav-secondary">
-        <a
-          className="nav-item"
-          href="#"
-          onClick={(e) => e.preventDefault()}
-          title="Library"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m16 6 4 14" />
-            <path d="M12 6v14" />
-            <path d="M8 8v12" />
-            <path d="M4 4v16" />
-          </svg>
-          <b>Library</b>
-        </a>
-      </div>
       <div className="side-ctl">
         <div className="side-row">
           <span className="side-label">THEME</span>
@@ -165,7 +149,9 @@ export default function Sidebar({
       <div className="mini-profile">
         <div className="avatar">P</div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 600 }}>Parva Mosharof</div>
+          <div style={{ fontSize: 13, fontWeight: 600 }}>
+            MD. Parvaj Mosharof
+          </div>
           <div className="mono" style={{ fontSize: 10, color: "var(--muted)" }}>
             DHAKA • UTC+6
           </div>
@@ -173,7 +159,7 @@ export default function Sidebar({
       </div>
       <div className="copyright">
         <span className="cr-full">
-          © <span className="cr-year">{year}</span> Parva Mosharof
+          © <span className="cr-year">{year}</span> MD. Parvaj Mosharof
         </span>
         <span className="cr-short">
           © <span className="cr-year">{year}</span>

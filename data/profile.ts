@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { FileText, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import type { Accent } from "@/lib/theme";
 
 export type AccentOption = {
@@ -114,15 +114,18 @@ export type RailLink = {
   icon: RailIcon;
 };
 
-/** Right-rail links block — order + hrefs copied verbatim from old/index.html.
- *  Placeholder hrefs ("#", hello@parva.dev) stay as-is until Step 7.
- *  GitHub/LinkedIn use string keys: this lucide-react version ships no brand
- *  icons, so RightRail renders the original inline SVGs for those two only. */
+/** Right-rail links block — GitHub/LinkedIn/Email with real hrefs (Step 7).
+ *  Resume removed per owner request. GitHub/LinkedIn use string keys: this
+ *  lucide-react version ships no brand icons, so RightRail renders the
+ *  original inline SVGs for those two only. */
 export const RAIL_LINKS: RailLink[] = [
-  { label: "GitHub", href: "#", icon: "github" },
-  { label: "LinkedIn", href: "#", icon: "linkedin" },
-  { label: "Email", href: "mailto:hello@parva.dev", icon: Mail },
-  { label: "Resume (PDF)", href: "#", icon: FileText },
+  { label: "GitHub", href: "https://github.com/parvajio", icon: "github" },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/parvajio",
+    icon: "linkedin",
+  },
+  { label: "Email", href: "mailto:hello@parvajio.dev", icon: Mail },
 ];
 
 export type CtxBlock = {

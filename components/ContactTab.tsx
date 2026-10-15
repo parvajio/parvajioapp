@@ -1,13 +1,11 @@
-"use client";
-
+/** Contact tab — page-head + 3 .item links, copied verbatim from
+ *  old/index.html. Real hrefs wired in Step 7 (email + GitHub/LinkedIn
+ *  externals with target/rel). Static links only, so this is a server
+ *  component. GitHub/LinkedIn brand glyphs have no lucide-react match in
+ *  this version, so the two original inline SVGs are kept verbatim
+ *  (allowed by the icons rule). */
 import { ArrowUpRight, Mail } from "lucide-react";
 
-/** Contact tab — page-head + 3 .item links, copied verbatim from
- *  old/index.html. Placeholder hrefs ("#", hello@parva.dev) stay as-is
- *  until Step 7; "#" links preventDefault like onclick="return false" did,
- *  which is why this leaf is a client component. GitHub/LinkedIn brand
- *  glyphs have no lucide-react match in this version, so the two original
- *  inline SVGs are kept verbatim (allowed by the icons rule). */
 export default function ContactTab() {
   return (
     <div id="tab-contact">
@@ -21,12 +19,12 @@ export default function ContactTab() {
           </p>
         </div>
         <div className="list">
-          <a className="item" data-toc="Email" href="mailto:hello@parva.dev">
+          <a className="item" data-toc="Email" href="mailto:hello@parvajio.dev">
             <div className="item-num">
               <Mail aria-hidden="true" />
             </div>
             <div className="item-body">
-              <div className="item-title">hello@parva.dev</div>
+              <div className="item-title">hello@parvajio.dev</div>
               <div className="item-desc">
                 Reply within 24h. Include timeline and scope.
               </div>
@@ -38,8 +36,9 @@ export default function ContactTab() {
           <a
             className="item"
             data-toc="GitHub"
-            href="#"
-            onClick={(e) => e.preventDefault()}
+            href="https://github.com/parvajio"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <div className="item-num">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -60,8 +59,9 @@ export default function ContactTab() {
           <a
             className="item"
             data-toc="LinkedIn"
-            href="#"
-            onClick={(e) => e.preventDefault()}
+            href="https://www.linkedin.com/in/parvajio"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <div className="item-num">
               <svg viewBox="0 0 24 24" aria-hidden="true">

@@ -143,15 +143,14 @@ export default function RightRail({
             <span>LINKS</span>
           </div>
           {RAIL_LINKS.map((link) => {
-            const placeholder = link.href === "#";
+            const external = link.href.startsWith("http");
             return (
               <a
                 key={link.label}
                 className="rail-link"
                 href={link.href}
-                onClick={
-                  placeholder ? (e) => e.preventDefault() : undefined
-                }
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
               >
                 <RailLinkIcon icon={link.icon} />
                 {link.label}

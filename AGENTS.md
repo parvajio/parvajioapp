@@ -62,8 +62,8 @@ lib/        theme.ts
 - [x] Step 1: foundation (layout, globals.css, fonts, theme script, lib/theme.ts)
 - [x] Step 2: Hero, Shutter, ThemeControls
 - [x] Step 3: WorkShell, Sidebar, PageBar, tab placeholders, empty right-rail aside
-- [ ] Step 4: ProfileTab + RightRail (TOC, scroll spy, DhakaClock)
-- [ ] Step 5: ProjectsTab + data/works.ts + hover → rail context
+- [x] Step 4: ProfileTab + RightRail (TOC, scroll spy, DhakaClock)
+- [x] Step 5: ProjectsTab + data/works.ts + hover → rail context
 - [ ] Step 6: ContactTab, ScrollRing, up button
 - [ ] Step 7: cleanup (placeholder links/email, metadata, final build)
 - [ ] Step 8 (after port is verified): mobile navbar redesign. Below 720px,replace the sidebar strip with a top bar: menu button, theme toggle,contact button. Content only, no right rail. Desktop unchanged.
