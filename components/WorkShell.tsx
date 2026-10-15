@@ -1,10 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
 import ContactTab from "./ContactTab";
 import PageBar from "./PageBar";
 import ProfileTab from "./ProfileTab";
 import ProjectsTab from "./ProjectsTab";
+import RightRail from "./RightRail";
 import Sidebar from "./Sidebar";
 
 export type WorkTab = "profile" | "works" | "contact";
@@ -48,6 +50,8 @@ export default function WorkShell() {
     mainRef.current?.scrollTo({ top: 0 });
   }, []);
 
+  const spy = useScrollSpy(mainRef, curTab);
+
   return (
     <section id="work" className={collapsed ? "nav-collapsed" : undefined}>
       <div className="cols">
@@ -58,12 +62,22 @@ export default function WorkShell() {
           onToggleNav={toggleNav}
         />
         <main className="col-main" id="mainCol" ref={mainRef}>
-          <PageBar onContact={() => showTab("contact")} />
+          <PageBar
+            onContact={() => showTab("contact")}
+            showId={spy.showId}
+            scrolled={spy.scrolled}
+          />
           {curTab === "profile" && <ProfileTab />}
           {curTab === "works" && <ProjectsTab />}
           {curTab === "contact" && <ContactTab />}
         </main>
-        <aside className="col-info" />
+        <RightRail
+          curTab={curTab}
+          sections={spy.sections}
+          activeIdx={spy.activeIdx}
+          progress={spy.progress}
+          onSelect={spy.scrollToSec}
+        />
       </div>
     </section>
   );

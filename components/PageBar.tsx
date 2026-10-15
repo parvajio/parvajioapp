@@ -2,9 +2,11 @@
 
 type PageBarProps = {
   onContact: () => void;
+  showId: boolean;
+  scrolled: boolean;
 };
 
-export default function PageBar({ onContact }: PageBarProps) {
+export default function PageBar({ onContact, showId, scrolled }: PageBarProps) {
   const handleShare = () => {
     try {
       const url = window.location.href;
@@ -14,8 +16,10 @@ export default function PageBar({ onContact }: PageBarProps) {
     }
   };
 
+  const barClass = `page-bar${scrolled ? " scrolled" : ""}${showId ? " show-id" : ""}`;
+
   return (
-    <div className="page-bar" id="pageBar">
+    <div className={barClass} id="pageBar">
       <div className="bar-id">
         <div className="bar-avatar">P</div>
         <div>
