@@ -375,3 +375,17 @@ html[data-accent="green"] .swatch[data-accent="green"]{border-color:var(--white)
   #work .mnav-item.active b{font-weight:700}
   .mnav-color{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 12px 6px;margin-top:8px;border-top:1px solid var(--line)}
 }
+
+/* ---------- Step 8a: mobile scroll-lock (<720px only; desktop unchanged) ---------- */
+/* Locks .col-main until #work pins to the viewport top so swipes move the
+   page first, then settles on hero/work via proximity snap (never half in
+   view). Down-swipe at scrollTop 0 is contained — return is via up button. */
+@media(max-width:720px){
+  html{scroll-snap-type:y proximity}
+  html.no-snap{scroll-snap-type:none}
+  #hero,#work{scroll-snap-align:start}
+  #hero{min-height:100vh;min-height:100dvh}
+  #work{min-height:100vh;min-height:100dvh}
+  #work .col-main{overflow-y:hidden;overscroll-behavior-y:contain;max-height:100vh;max-height:calc(100dvh - 60px)}
+  #work[data-active="true"] .col-main{overflow-y:auto}
+}
