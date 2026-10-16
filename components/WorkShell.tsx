@@ -75,10 +75,10 @@ export default function WorkShell() {
   // separate touch-only progress state.
   const pull = usePullToReturn(mainRef, workActive, hard.goHero);
 
-  // Up-button path is hard.goHero directly: the mobile snap parking
-  // (no-snap + inner reset, restored on arrival) lives inside the hook so
-  // the ring trip and the button share one trip. Desktop passes straight
-  // through to the hard-scroll-back trip.
+  // Up-button path is hard.goHero directly: the mobile inner reset
+  // (so re-entry starts at the top) lives inside the hook so the ring
+  // trip and the button share one trip. Desktop passes straight through
+  // to the hard-scroll-back trip.
 
   return (
     <>
