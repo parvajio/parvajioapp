@@ -11,6 +11,27 @@ export default function Shutter() {
     openRef.current = open;
   }, [open]);
 
+  // Scroll perf: while the page moves, freeze the infinite .feat sheen
+  // (html.is-scrolling → animation-play-state:paused in globals.css).
+  // Mobile Safari repaints background-clip:text on the CPU every frame,
+  // which drops scroll frames in the hero where all three sheens run.
+  // Passive listener, idle timer cleared on re-fire and unmount.
+  useEffect(() => {
+    let idle: number | undefined;
+    const onScroll = () => {
+      document.documentElement.classList.add("is-scrolling");
+      window.clearTimeout(idle);
+      idle = window.setTimeout(() => {
+        document.documentElement.classList.remove("is-scrolling");
+      }, 150);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(idle);
+      document.documentElement.classList.remove("is-scrolling");
+    };
+  }, []);
   // Single invite peek — one orchestrated moment, no loop (respects reduced-motion).
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;

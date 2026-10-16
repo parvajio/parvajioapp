@@ -67,9 +67,9 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-inter),'Inte
 
 /* ---------- HERO ---------- */
 #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background:var(--bg)}
-#hero::before{content:'';position:absolute;width:1100px;height:700px;left:50%;top:-260px;transform:translateX(-50%);background:radial-gradient(closest-side,var(--glow),transparent 70%);pointer-events:none}
-#hero::after{content:'';position:absolute;width:700px;height:380px;left:50%;bottom:-160px;transform:translateX(-50%);background:radial-gradient(closest-side,var(--glow2),transparent 70%);pointer-events:none}
-.grid-lines{position:absolute;inset:0;display:flex;justify-content:space-evenly;pointer-events:none;opacity:.5}
+#hero::before{content:'';position:absolute;width:1100px;height:700px;left:50%;top:-260px;transform:translateX(-50%);background:radial-gradient(closest-side,var(--glow),transparent 70%);pointer-events:none;will-change:transform}
+#hero::after{content:'';position:absolute;width:700px;height:380px;left:50%;bottom:-160px;transform:translateX(-50%);background:radial-gradient(closest-side,var(--glow2),transparent 70%);pointer-events:none;will-change:transform}
+.grid-lines{position:absolute;inset:0;display:flex;justify-content:space-evenly;pointer-events:none;opacity:.5;will-change:transform}
 .grid-lines span{width:1px;background:var(--grid);height:100%}
 .topbar{display:flex;justify-content:flex-end;align-items:center;padding:26px 48px;position:relative;z-index:2}
 .brand{display:flex;align-items:center;gap:12px}
@@ -121,6 +121,14 @@ body{background:var(--bg);color:var(--white);font-family:var(--font-inter),'Inte
 .feat{position:relative;display:inline-block;padding:0 .08em;margin:0 -.08em;color:var(--primary);background:linear-gradient(92deg,var(--primary),var(--primary2) 55%,var(--deep));-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;overflow-wrap:break-word}
 .feat::after{content:attr(data-text);position:absolute;inset:0;padding:0 .08em;background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.9) 50%,transparent 58%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;transform:translateX(-120%);animation:feat-sheen 3.8s ease-in-out infinite;animation-delay:var(--d,0s);pointer-events:none;will-change:transform}
 @keyframes feat-sheen{0%,55%{transform:translateX(-120%)}90%,100%{transform:translateX(120%)}}
+/* Scroll perf: the infinite sheen above runs on background-clip:text,
+   which mobile Safari repaints on the CPU every frame — while the page
+   scrolls that steals frames from the scroll compositor (choppy hero).
+   html.is-scrolling is set by a passive scroll listener (see Shutter)
+   and cleared ~150ms after the last scroll event; play-state preserves
+   the animation position so the resume is seamless. At rest nothing
+   changes. */
+html.is-scrolling .feat::after{animation-play-state:paused}
 @media (prefers-reduced-motion:reduce){.feat::after{animation:none;display:none}}
 .desc-sub{display:block;margin-top:8px;font-size:15px;line-height:24px;color:var(--body-text);font-weight:400}
 .stack{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
