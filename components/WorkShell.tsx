@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { useHardScrollBack } from "@/hooks/useHardScrollBack";
+import { usePullToReturn } from "@/hooks/usePullToReturn";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
 import { useWorkPin } from "@/hooks/useWorkPin";
 import ContactTab from "./ContactTab";
@@ -10,6 +11,7 @@ import MobileNav from "./MobileNav";
 import PageBar from "./PageBar";
 import ProfileTab from "./ProfileTab";
 import ProjectsTab from "./ProjectsTab";
+import PullCue from "./PullCue";
 import RightRail from "./RightRail";
 import ScrollRing from "./ScrollRing";
 import Sidebar from "./Sidebar";
@@ -67,6 +69,11 @@ export default function WorkShell() {
   // Mobile-only pin: .col-main stays locked until #work reaches the top.
   // Re-evaluated per tab since tab switches change the content height.
   const workActive = useWorkPin(workRef, curTab);
+  // Mobile-only pull-to-return: a deliberate downward pull at the top of
+  // .col-main (while pinned) trips the same goHero flight as the ring/up
+  // button. Desktop and the wheel ring are unaffected — this hook owns
+  // separate touch-only progress state.
+  const pull = usePullToReturn(mainRef, workActive, hard.goHero);
 
   // Up-button path is hard.goHero directly: the mobile snap parking
   // (no-snap + inner reset, restored on arrival) lives inside the hook so
@@ -82,6 +89,7 @@ export default function WorkShell() {
         className={collapsed ? "nav-collapsed" : undefined}
       >
         <MobileNav curTab={curTab} onTab={showTab} />
+        <PullCue pullPx={pull.pullPx} progress={pull.progress} pulling={pull.pulling} />
         <div className="cols">
           <Sidebar
             curTab={curTab}
