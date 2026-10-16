@@ -9,4 +9,8 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
 };
 
+module.exports = {
+  allowedDevOrigins: ['192.168.0.174'],
+}
+
 export default nextConfig;
