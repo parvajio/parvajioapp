@@ -425,3 +425,6 @@ html[data-accent="green"] .swatch[data-accent="green"]{border-color:var(--white)
   .pull-cue-track{display:block;width:64px;height:2px;border-radius:2px;background:var(--line);overflow:hidden}
   .pull-cue-fill{display:block;width:100%;height:100%;background:var(--primary);border-radius:2px;transform:scaleX(0);transform-origin:left center}
 }
+
+/* ---------- Desktop pull-cue parity: hide wheel cue on mobile (pull cue covers it) ---------- */
+@media(max-width:720px){.scroll-progress{display:none}}

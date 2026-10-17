@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 /** Accumulated upward wheel delta needed to trigger the trip back to hero. */
-const NEED = 1400;
+const NEED = 700;
 /** How long the floating ring stays visible per wheel tick. */
 const FLASH_MS = 700;
 

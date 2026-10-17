@@ -1,5 +1,4 @@
-/** Ring circumference (r=19 → 2πr≈119.4), copied from old/index.html. */
-const CIRC = 119.4;
+import { ArrowUp } from "lucide-react";
 
 type ScrollRingProps = {
   /** Accumulated scroll effort 0–1. */
@@ -8,44 +7,62 @@ type ScrollRingProps = {
   visible: boolean;
 };
 
-/** Floating hard-scroll-back ring. Same #scrollProgress structure as
- *  old/index.html, but stripped of all chrome per design request: no
- *  bubble (background/border/shadow neutralized inline so globals.css
- *  stays verbatim) and no track circle — just the progress arc and the
- *  percentage. Positioning + show/hide still come from .scroll-progress. */
+/** Floating hard-scroll-back cue. Uses the mobile pull-cue pill design on
+ *  desktop instead of the original ring. Positioning + show/hide still
+ *  come from .scroll-progress. */
 export default function ScrollRing({ progress, visible }: ScrollRingProps) {
-  const pct = Math.round(progress * 100);
   return (
     <div
       className={`scroll-progress${visible ? " show" : ""}`}
       id="scrollProgress"
       aria-hidden="true"
       style={{
-        background: "none",
-        border: "none",
-        boxShadow: "none",
-        padding: 0,
+        background: "color-mix(in srgb, var(--surface) 88%, transparent)",
+        border: "1px solid var(--line)",
+        borderRadius: "999px",
+        padding: "6px 12px 6px 8px",
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        boxShadow: "0 8px 30px var(--glow)",
       }}
     >
-      <div className="progress-ring">
-        <svg width="46" height="46" viewBox="0 0 46 46">
-          <circle
-            id="ring"
-            cx="23"
-            cy="23"
-            r="19"
-            style={{ stroke: "var(--primary)" }}
-            strokeWidth={5}
-            fill="none"
-            strokeLinecap="round"
-            strokeDasharray={CIRC}
-            strokeDashoffset={(CIRC * (1 - progress)).toFixed(1)}
-          />
-        </svg>
-        <div className="pct" id="pct">
-          {pct}%
-        </div>
-      </div>
+      <span
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: "20px",
+          height: "20px",
+          borderRadius: "50%",
+          background: "var(--primary)",
+          color: "var(--on-primary)",
+        }}
+      >
+        <ArrowUp size={14} aria-hidden="true" />
+      </span>
+      <span
+        style={{
+          display: "block",
+          width: "64px",
+          height: "2px",
+          borderRadius: "2px",
+          background: "var(--line)",
+          overflow: "hidden",
+        }}
+      >
+        <span
+          style={{
+            display: "block",
+            width: "100%",
+            height: "100%",
+            background: "var(--primary)",
+            borderRadius: "2px",
+            transform: `scaleX(${progress.toFixed(3)})`,
+            transformOrigin: "left center",
+          }}
+        />
+      </span>
     </div>
   );
 }
