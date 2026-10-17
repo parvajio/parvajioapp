@@ -3,12 +3,15 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { useHardScrollBack } from "@/hooks/useHardScrollBack";
+import { usePullToReturn } from "@/hooks/usePullToReturn";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
+import { useWorkPin } from "@/hooks/useWorkPin";
 import ContactTab from "./ContactTab";
 import MobileNav from "./MobileNav";
 import PageBar from "./PageBar";
 import ProfileTab from "./ProfileTab";
 import ProjectsTab from "./ProjectsTab";
+import PullCue from "./PullCue";
 import RightRail from "./RightRail";
 import ScrollRing from "./ScrollRing";
 import Sidebar from "./Sidebar";
@@ -58,34 +61,35 @@ export default function WorkShell() {
   const showTab = useCallback((tab: WorkTab) => {
     setCurTab(tab);
     setHoverIdx(null);
-    // Desktop (721px+): the inner column is the scroller — reset it.
-    // Mobile: the window is the only scroller. If #work's top is above
-    // the viewport, align it under the viewport top instantly;
-    // otherwise don't scroll. Evaluated at call time, no subscription.
-    const isDesktop = window.matchMedia("(min-width: 721px)").matches;
-    if (isDesktop) {
-      mainRef.current?.scrollTo({ top: 0 });
-      return;
-    }
-    const top = workRef.current?.getBoundingClientRect().top ?? 0;
-    if (top < 0) {
-      window.scrollTo({ top: top + window.scrollY, behavior: "auto" });
-    }
+    mainRef.current?.scrollTo({ top: 0 });
   }, []);
 
   const spy = useScrollSpy(mainRef, curTab);
   const hard = useHardScrollBack();
+  // Mobile-only pin: .col-main stays locked until #work reaches the top.
+  // Re-evaluated per tab since tab switches change the content height.
+  const workActive = useWorkPin(workRef, curTab);
+  // Mobile-only pull-to-return: a deliberate downward pull at the top of
+  // .col-main (while pinned) trips the same goHero flight as the ring/up
+  // button. Desktop and the wheel ring are unaffected — this hook owns
+  // separate touch-only progress state.
+  const pull = usePullToReturn(mainRef, workActive, hard.goHero);
 
-  // Up button scrolls the window to the top (hero) on both widths.
+  // Up-button path is hard.goHero directly: the mobile inner reset
+  // (so re-entry starts at the top) lives inside the hook so the ring
+  // trip and the button share one trip. Desktop passes straight through
+  // to the hard-scroll-back trip.
 
   return (
     <>
       <section
         id="work"
         ref={workRef}
+        data-active={workActive ? "true" : "false"}
         className={collapsed ? "nav-collapsed" : undefined}
       >
         <MobileNav curTab={curTab} onTab={showTab} />
+        <PullCue pullPx={pull.pullPx} progress={pull.progress} pulling={pull.pulling} />
         <div className="cols">
           <Sidebar
             curTab={curTab}

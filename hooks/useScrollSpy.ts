@@ -24,10 +24,8 @@ export type ScrollSpy = {
 /**
  * Ports buildToc() + onScroll() + scrollToSec() from old/index.html.
  * The section list is rebuilt whenever curTab changes (the original did
- * this inside showTab()). Desktop-only (721px+): below 720px the window
- * is the only scroller and the TOC/progress aren't shown, so no scroll
- * listener is attached. A matchMedia subscription re-runs setup on
- * rotation across 720px; all listeners are cleaned up.
+ * this inside showTab()). Passive scroll listener, cleaned up on unmount
+ * and whenever the tab changes.
  */
 export function useScrollSpy(
   mainRef: RefObject<HTMLElement | null>,
@@ -58,55 +56,32 @@ export function useScrollSpy(
   useEffect(() => {
     const main = mainRef.current;
     if (!main) return;
-    const mq = window.matchMedia("(min-width: 721px)");
-    let cleanupInner: (() => void) | undefined;
+    const tabEl = main.querySelector(`#tab-${curTab}`);
+    const secs = tabEl
+      ? Array.from(tabEl.querySelectorAll<HTMLElement>("[data-toc]"))
+      : [];
+    secsRef.current = secs;
+    setSections(secs.map((s) => s.dataset.toc ?? ""));
 
-    const setup = () => {
-      cleanupInner?.();
-      cleanupInner = undefined;
-      if (!mq.matches) {
-        secsRef.current = [];
-        setSections([]);
-        setActiveIdx(0);
-        setProgress(0);
-        setScrolled(false);
-        setShowId(curTab !== "profile");
-        return;
-      }
-      const tabEl = main.querySelector(`#tab-${curTab}`);
-      const secs = tabEl
-        ? Array.from(tabEl.querySelectorAll<HTMLElement>("[data-toc]"))
-        : [];
-      secsRef.current = secs;
-      setSections(secs.map((s) => s.dataset.toc ?? ""));
-
-      const onScroll = () => {
-        const st = main.scrollTop;
-        const max = main.scrollHeight - main.clientHeight;
-        const p = max > 0 ? Math.min(1, st / max) : 0;
-        setProgress(p);
-        const mt = main.getBoundingClientRect().top;
-        let idx = 0;
-        secs.forEach((s, i) => {
-          if (s.getBoundingClientRect().top - mt <= 140) idx = i;
-        });
-        if (max > 0 && st >= max - 4) idx = secs.length - 1;
-        setActiveIdx(idx);
-        setScrolled(st > 4);
-        setShowId(curTab !== "profile" || st > 230);
-      };
-
-      onScroll();
-      main.addEventListener("scroll", onScroll, { passive: true });
-      cleanupInner = () => main.removeEventListener("scroll", onScroll);
+    const onScroll = () => {
+      const st = main.scrollTop;
+      const max = main.scrollHeight - main.clientHeight;
+      const p = max > 0 ? Math.min(1, st / max) : 0;
+      setProgress(p);
+      const mt = main.getBoundingClientRect().top;
+      let idx = 0;
+      secs.forEach((s, i) => {
+        if (s.getBoundingClientRect().top - mt <= 140) idx = i;
+      });
+      if (max > 0 && st >= max - 4) idx = secs.length - 1;
+      setActiveIdx(idx);
+      setScrolled(st > 4);
+      setShowId(curTab !== "profile" || st > 230);
     };
 
-    setup();
-    mq.addEventListener("change", setup);
-    return () => {
-      mq.removeEventListener("change", setup);
-      cleanupInner?.();
-    };
+    onScroll();
+    main.addEventListener("scroll", onScroll, { passive: true });
+    return () => main.removeEventListener("scroll", onScroll);
   }, [mainRef, curTab]);
 
   return { sections, activeIdx, progress, scrolled, showId, scrollToSec };
