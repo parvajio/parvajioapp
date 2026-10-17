@@ -395,22 +395,19 @@ html[data-accent="green"] .swatch[data-accent="green"]{border-color:var(--white)
 /* Locks .col-main until #work pins to the viewport top so swipes move the
    page first (pure native scroll, no scroll-snap). The pin hook holds the
    enter edge until any active touch lifts, so one continuous swipe can't
-   hand a live gesture to the inner column mid-flight. No overscroll
-   containment: swipes chain to the page when the inner column can't
-   scroll — return via content swipe or up button. */
+   hand a live gesture to the inner column mid-flight. Native overscroll
+   stays enabled on the viewport scroller so Android pull-to-refresh works
+   at the top of the hero; the custom pull-to-return handles the inner
+   column's downward-at-top gesture via preventDefault. */
 @media(max-width:720px){
-  #hero{min-height:100vh;min-height:100dvh}
+  #hero{min-height:100vh;min-height:100svh}
   /* Exactly 100dvh: sticky mnav is 48px bar + 1px border, so the column
-     subtracts 49px. */
+      subtracts 49px. */
   #work{min-height:100vh;min-height:100dvh}
   #work .col-main{overflow-y:hidden;max-height:calc(100vh - 49px);max-height:calc(100dvh - 49px)}
   #work[data-active="true"] .col-main{overflow-y:auto}
-  /* Step 8e: kill Android native pull-to-refresh on mobile so the custom
-     pull-to-return owns the downward-at-top gesture. Set on the viewport
-     scroller only — never overscroll-behavior:contain on .col-main (it
-     would trap chaining). iOS rubber-band is absorbed via preventDefault
-     in usePullToReturn (iOS ignores overscroll-behavior). */
-  html,body{overscroll-behavior-y:none}
+  /* Native pull-to-refresh is enabled (no overscroll-behavior override):
+      iOS rubber-band is absorbed via preventDefault in usePullToReturn. */
 }
 
 /* ---------- Step 8e: mobile pull-to-return cue (<720px only) ---------- */
