@@ -367,7 +367,7 @@ html[data-accent="green"] .swatch[data-accent="green"]{border-color:var(--white)
   /* Replace the horizontal sidebar strip with the top navbar. */
   #work .col-nav{display:none}
   .col-info{display:none}
-  .mnav{display:block;position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .mnav{display:block;position:sticky;top:0;z-index:40;background:var(--bg);border-bottom:1px solid var(--line)}
   .mnav-bar{display:flex;align-items:center;flex-wrap:nowrap;gap:8px;min-height:48px;padding:6px 12px}
   .mnav-spacer{flex:1}
   .mnav-menu,.mnav-theme,.mnav-cta{flex-shrink:0}
@@ -391,37 +391,16 @@ html[data-accent="green"] .swatch[data-accent="green"]{border-color:var(--white)
   .hero{margin-top:0}
 }
 
-/* ---------- Step 8a: mobile scroll-lock (<720px only; desktop unchanged) ---------- */
-/* Locks .col-main until #work pins to the viewport top so swipes move the
-   page first (pure native scroll, no scroll-snap). The pin hook holds the
-   enter edge until any active touch lifts, so one continuous swipe can't
-   hand a live gesture to the inner column mid-flight. Native overscroll
-   stays enabled on the viewport scroller so Android pull-to-refresh works
-   at the top of the hero; the custom pull-to-return handles the inner
-   column's downward-at-top gesture via preventDefault. */
+/* ---------- Step 8h: mobile single normal page (<720px only; desktop unchanged) ---------- */
+/* The window is the ONLY scroller: hero, then #work flows after it in
+   normal document flow. No scroll-snap, no overflow toggling, no pin,
+   no pull gesture, no wheel ring. */
 @media(max-width:720px){
-  #hero{min-height:100vh;min-height:100svh}
-  /* Exactly 100dvh: sticky mnav is 48px bar + 1px border, so the column
-      subtracts 49px. */
-  #work{min-height:100vh;min-height:100dvh}
-  #work .col-main{overflow-y:hidden;max-height:calc(100vh - 49px);max-height:calc(100dvh - 49px)}
-  #work[data-active="true"] .col-main{overflow-y:auto}
-  /* Native pull-to-refresh is enabled (no overscroll-behavior override):
-      iOS rubber-band is absorbed via preventDefault in usePullToReturn. */
+  #hero{min-height:100vh;min-height:100dvh}
+  #work{height:auto;min-height:0}
+  .cols{display:block}
+  .col-main{overflow:visible;max-height:none}
 }
 
-/* ---------- Step 8e: mobile pull-to-return cue (<720px only) ---------- */
-/* Hidden on desktop; enabled only inside the mobile media query below.
-   Lighter companion to the wheel ScrollRing (which stays untouched):
-   a small pill under the mnav that drops at half the finger rate. */
-.pull-cue{display:none}
-@media(max-width:720px){
-  .pull-cue{display:flex;align-items:center;gap:8px;position:absolute;top:54px;left:50%;transform:translateX(-50%);z-index:39;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--line);border-radius:999px;padding:6px 12px 6px 8px;pointer-events:none;opacity:0;transition:opacity .18s ease,transform .18s ease;box-shadow:0 8px 30px var(--glow)}
-  .pull-cue-icon{display:flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--primary);color:var(--on-primary)}
-  .pull-cue-icon svg{width:14px;height:14px}
-  .pull-cue-track{display:block;width:64px;height:2px;border-radius:2px;background:var(--line);overflow:hidden}
-  .pull-cue-fill{display:block;width:100%;height:100%;background:var(--primary);border-radius:2px;transform:scaleX(0);transform-origin:left center}
-}
-
-/* ---------- Desktop pull-cue parity: hide wheel cue on mobile (pull cue covers it) ---------- */
+/* Desktop wheel ring is hidden on mobile — the window is the only scroller there. */
 @media(max-width:720px){.scroll-progress{display:none}}

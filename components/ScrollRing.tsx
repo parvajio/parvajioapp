@@ -7,9 +7,9 @@ type ScrollRingProps = {
   visible: boolean;
 };
 
-/** Floating hard-scroll-back cue. Uses the mobile pull-cue pill design on
- *  desktop instead of the original ring. Positioning + show/hide still
- *  come from .scroll-progress. */
+/** Floating hard-scroll-back cue. Uses a compact pill design instead of
+ *  the original ring. Positioning + show/hide still come from
+ *  .scroll-progress. Desktop-only: hidden below 720px. */
 export default function ScrollRing({ progress, visible }: ScrollRingProps) {
   return (
     <div
