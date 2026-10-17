@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowUp } from "lucide-react";
+
 import { useHardScrollBack } from "@/hooks/useHardScrollBack";
 import { usePullToReturn } from "@/hooks/usePullToReturn";
 import { useScrollSpy } from "@/hooks/useScrollSpy";
@@ -117,14 +117,6 @@ export default function WorkShell() {
           />
         </div>
       </section>
-      <button
-        type="button"
-        className="up-btn"
-        onClick={hard.goHero}
-        aria-label="back to hero"
-      >
-        <ArrowUp size={20} aria-hidden="true" />
-      </button>
       <ScrollRing progress={hard.progress} visible={hard.visible} />
     </>
   );
